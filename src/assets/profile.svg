@@ -1,0 +1,22 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="shadow" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="rgba(2,6,23,0.05)"/>
+      <stop offset="100%" stop-color="rgba(2,6,23,0.35)"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" rx="160" fill="url(#bg-gradient)"/>
+  <g transform="translate(60 60)">
+    <circle cx="100" cy="64" r="48" fill="#e2e8f0"/>
+    <path d="M0 200c12-64 64-104 120-104s108 40 120 104c0 0-52 24-120 24S0 200 0 200z" fill="#e2e8f0" opacity="0.92"/>
+    <path d="M0 204c12-56 64-92 120-92s108 36 120 92c0 0-52 22-120 22S0 204 0 204z" fill="url(#shadow)"/>
+  </g>
+</svg>
+
+
+
+
