@@ -7,16 +7,25 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
   FaAws,
+  FaCode,
+  FaRocket,
+  FaDownload,
 } from 'react-icons/fa'
 import { SiSpringboot, SiMysql } from 'react-icons/si'
 import { TbCloudComputing } from 'react-icons/tb'
 import profileImage from '../Images/Naveen.jpg'
+import resumePdf from '../Naveen_Resume.pdf'
 
 function App() {
   const formRef = useRef(null)
   const [isSending, setIsSending] = useState(false)
   const [formStatus, setFormStatus] = useState({ type: 'idle', message: '' })
   const [visibleSections, setVisibleSections] = useState(new Set())
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [typedText, setTypedText] = useState('')
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
+
+  const words = ['Frontend Developer', 'React Developer', 'DSA Enthusiast', 'Cloud Learner']
 
   useEffect(() => {
     const observerOptions = {
@@ -39,6 +48,44 @@ function App() {
       sections.forEach((section) => observer.unobserve(section))
     }
   }, [])
+
+  // Mouse tracking for parallax effects
+  useEffect(() => {
+    const isFinePointer = window.matchMedia?.('(pointer: fine)').matches
+    if (!isFinePointer) return
+
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  // Typing animation
+  useEffect(() => {
+    const currentWord = words[currentWordIndex]
+    let timeout
+    let charIndex = 0
+
+    const type = () => {
+      if (charIndex < currentWord.length) {
+        setTypedText(currentWord.substring(0, charIndex + 1))
+        charIndex++
+        timeout = setTimeout(type, 100)
+      } else {
+        timeout = setTimeout(() => {
+          setTypedText('')
+          setCurrentWordIndex((prev) => (prev + 1) % words.length)
+        }, 2000)
+      }
+    }
+
+    type()
+    return () => clearTimeout(timeout)
+  }, [currentWordIndex])
 
   const contactLinks = [
     {
@@ -66,6 +113,11 @@ function App() {
       href: 'https://github.com/Naveenthiagarajan',
     },
     {
+      icon: <FaCode />,
+      label: 'LeetCode',
+      value: '200+ problems solved',
+    },
+    {
       icon: <FaMapMarkerAlt />,
       label: 'Location',
       value: 'Madurai-19, India',
@@ -74,94 +126,139 @@ function App() {
 
   const education = [
     {
-      degree: 'Bachelor of Computer Science',
-      institution: 'Sri Krishna College of Technology',
-      details: 'CGPA: 7.79 / 10 (up to 4th semester)',
-      timeline: '2023 — Present',
-    },
-    {
-      degree: 'Higher Secondary Education',
-      institution: 'Jayaraj Nadar Higher Secondary School',
-      details: 'Percentage: 91.8%',
+      degree: 'B.E. in Computer Science Engineering',
+      institution: 'Sri Krishna College of Technology · Coimbatore, India',
+      details: 'CGPA: 7.75 (up to 5th semester)',
+      timeline: '2023 — 2027',
     },
   ]
 
   const skills = [
     {
+      category: 'Frontend',
+      items: ['HTML', 'CSS', 'React.js', 'JavaScript', 'Bootstrap', 'jQuery'],
+    },
+    {
       category: 'Programming Languages',
-      items: ['Java', 'C++', 'Python'],
+      items: ['Java', 'C', 'C++', 'Python', 'JavaScript', 'SQL'],
     },
     {
-      category: 'Web Development',
-      items: ['React', 'HTML', 'CSS (Responsive Design)', 'JavaScript', 'jQuery'],
-    },
-    {
-      category: 'Backend Development',
+      category: 'Backend',
       items: ['Spring Boot', 'REST APIs', 'Swagger'],
     },
     {
-      category: 'Databases',
+      category: 'Testing & Automation',
+      items: ['Selenium WebDriver', 'JUnit', 'TestNG', 'Postman (API Testing)', 'Manual Testing'],
+    },
+    {
+      category: 'Database',
       items: ['MySQL'],
     },
     {
-      category: 'Data Engineering & Analytics',
-      items: [
-        'Snowflake',
-        'Microsoft Fabric',
-        'Power BI (Data Visualization)',
-        'EDA (Exploratory Data Analysis)',
-      ],
+      category: 'Core Concepts',
+      items: ['Data Structures & Algorithms', 'OOP', 'DBMS', 'RESTful APIs', 'SDLC'],
     },
     {
-      category: 'Cloud & Tools',
-      items: [
-        'AWS (S3, Lambda basics, EC2, CloudFront, VPC)',
-        'CI/CD Pipeline',
-        'Git',
-        'GitHub',
-      ],
+      category: 'Problem Solving',
+      items: ['200+ LeetCode problems (Arrays, Linked Lists, Trees, Graphs, DP)'],
     },
     {
-      category: 'Core CS Concepts',
-      items: [
-        'Data Structures & Algorithms (DSA)',
-        'Object-Oriented Programming (OOP)',
-        'REST APIs',
-        'Software Development Lifecycle',
-      ],
+      category: 'Cloud & DevOps',
+      items: ['AWS', 'Docker', 'CI/CD'],
+    },
+    {
+      category: 'Version Control & Collaboration',
+      items: ['Git', 'GitHub'],
+    },
+    {
+      category: 'Data Analysis & Visualization',
+      items: ['Pandas', 'NumPy', 'Matplotlib', 'EDA', 'Power BI'],
+    },
+    {
+      category: 'AI & Developer Tools',
+      items: ['Prompt-based debugging, refactoring, and test-case generation workflows'],
     },
   ]
 
   const projects = [
     {
-      title: 'E-Commerce Admin Panel',
-      type: 'Full Stack Application · College Project',
-      description:
-        'Full-stack web application for managing products, orders, and users with role-based access and a comprehensive admin dashboard.',
+      title: 'Construction Management Web Application',
+      type: 'Personal Project · Responsive Web App',
+      description: 'Responsive construction management web app to streamline data entry and workflow handling.',
       highlights: [
-        'Designed an intuitive admin dashboard for real-time product and order management.',
-        'Implemented REST APIs with Spring Boot and documented workflows using Swagger for maintainability.',
-        'Ensured reliable data persistence with MySQL and secure role-based access control.',
+        'Implemented dynamic forms and interactive UI components using JavaScript and jQuery.',
+        'Ensured cross-device and cross-browser compatibility with responsive design.',
+        'Improved usability and performance by optimizing DOM interactions.',
       ],
       technologies: [
-        { label: 'Frontend', value: 'React (responsive UI, dynamic components)' },
-        { label: 'Backend', value: 'Spring Boot (REST APIs), Swagger' },
-        { label: 'Database', value: 'MySQL' },
+        { label: 'Frontend', value: 'HTML, CSS (Flexbox, Media Queries), JavaScript, jQuery' },
       ],
     },
     {
-      title: 'Construction Management Application',
-      type: 'Responsive Web Application · Personal Project',
-      description:
-        'Responsive web platform enabling construction teams to manage dynamic forms, interactive UI elements, and cross-device collaboration.',
+      title: 'Mobile App Landing Page',
+      type: 'Frontend Project · Responsive UI',
+      description: 'Responsive landing page with modern sections and clean visual hierarchy.',
       highlights: [
-        'Crafted mobile-first layouts with CSS flexbox and media queries for seamless device compatibility.',
-        'Developed interactive UI components using vanilla JavaScript and jQuery.',
-        'Streamlined form handling and status tracking for efficient project oversight.',
+        'Built navigation, hero, feature cards, and call-to-action sections.',
+        'Used Bootstrap grid + Flexbox + media queries for responsiveness.',
+        'Deployed on Netlify for live hosting.',
       ],
       technologies: [
-        { label: 'Frontend', value: 'HTML, CSS (flexbox, media queries), JavaScript, jQuery' },
+        { label: 'Frontend', value: 'HTML, CSS, Bootstrap, JavaScript' },
       ],
+      links: [{ label: 'Live Demo', href: 'https://mobileappbynaveen.netlify.app' }],
+    },
+    {
+      title: 'Personal Developer Portfolio',
+      type: 'Frontend Project · React',
+      description: 'Modern responsive portfolio built with React and Vite to showcase projects and skills.',
+      highlights: [
+        'Added typing animation and scroll-based section reveal using Intersection Observer.',
+        'Built reusable UI blocks and rendered data dynamically using React hooks.',
+        'Integrated a contact form using Formspree for message submission.',
+      ],
+      technologies: [{ label: 'Frontend', value: 'React, JavaScript, HTML, CSS, Vite' }],
+    },
+    {
+      title: 'Job Portal REST API',
+      type: 'Personal Project · Backend + Auth',
+      description: 'Backend system for a job portal with recruiter/job flows and candidate applications.',
+      highlights: [
+        'Designed REST APIs for job management, authentication, and application tracking.',
+        'Implemented JWT authentication with role-based access control.',
+        'Optimized MySQL queries with pagination and sorting support.',
+      ],
+      technologies: [
+        { label: 'Backend', value: 'Java, Spring Boot, REST APIs, JWT' },
+        { label: 'Database', value: 'MySQL' },
+        { label: 'Frontend', value: 'React' },
+      ],
+    },
+    {
+      title: 'CodeJudge',
+      type: 'Personal Project · Coding Platform',
+      description: 'LeetCode-like platform for solving problems and submitting solutions.',
+      highlights: [
+        'Built REST APIs for problems, submissions, and authentication.',
+        'Implemented backend execution flow to validate code against multiple test cases.',
+        'Designed MySQL schema for users, problems, submissions, and leaderboards.',
+      ],
+      technologies: [
+        { label: 'Backend', value: 'Java, Spring Boot, REST APIs, JWT' },
+        { label: 'Database', value: 'MySQL' },
+        { label: 'Frontend', value: 'React, HTML' },
+      ],
+    },
+    {
+      title: 'Spam Message Classification (ML)',
+      type: 'Personal Project · Machine Learning',
+      description: 'ML model to classify SMS messages as spam or ham (not spam).',
+      highlights: [
+        'Performed text preprocessing and feature extraction (TF-IDF).',
+        'Trained models like Naive Bayes and Logistic Regression.',
+        'Evaluated results with accuracy, confusion matrix, and precision-recall metrics.',
+      ],
+      technologies: [{ label: 'Stack', value: 'Python, Pandas, NumPy, Scikit-learn, Matplotlib' }],
     },
   ]
 
@@ -175,27 +272,77 @@ function App() {
   ]
 
   const achievements = [
-    'Selected for Smart India Hackathon at college level (internal hackathon), showcasing problem-solving and collaboration skills.',
-    'Attended Data Engineering workshop conducted by CDW.',
+    'Solved 200+ problems on LeetCode covering Arrays, Linked Lists, Trees, Graphs, and Dynamic Programming.',
+    'Hands-on experience building responsive UIs, integrating REST APIs, and collaborating with Git & GitHub in agile teams.',
   ]
 
   const quickStats = [
     {
-      icon: <TbCloudComputing />,
-      label: 'Cloud Enthusiast',
-      detail: 'Hands-on with AWS services and CI/CD pipelines.',
+      icon: <FaCode />,
+      label: '200+ LeetCode',
+      detail: 'Consistent problem-solving with strong DSA fundamentals.',
+    },
+    {
+      icon: <FaRocket />,
+      label: '6+ Projects',
+      detail: 'Frontend, backend APIs, and ML projects shipped end-to-end.',
     },
     {
       icon: <SiSpringboot />,
-      label: 'Backend Developer',
-      detail: 'Experienced in building RESTful APIs with Spring Boot.',
+      label: 'Internships',
+      detail: 'Interned in development + testing roles (2025–2026).',
+    },
+    { icon: <FaAws />, label: 'Cloud & DevOps', detail: 'AWS, Docker, and CI/CD fundamentals.' },
+  ]
+
+  const workExperience = [
+    {
+      role: 'Software Developer Intern',
+      company: 'Blue Pearl Technologies',
+      location: 'Madurai, India',
+      timeline: 'May 2025 — Jun 2025',
+      stack: 'Java, Spring Boot, REST APIs, MySQL, React, Git, GitHub',
+      bullets: [
+        'Contributed to backend API development and database integration in an agile team.',
+        'Developed RESTful APIs with Spring Boot to support business logic and data management.',
+        'Collaborated with frontend developers to integrate backend services with responsive UI components.',
+      ],
     },
     {
-      icon: <SiMysql />,
-      label: 'Database Design',
-      detail: 'Comfortable modeling relational schemas in MySQL.',
+      role: 'Manual Software Testing Intern',
+      company: 'TheKalki',
+      location: 'Madurai, India',
+      timeline: 'Dec 2025 — Jan 2026',
+      stack: 'Manual Testing, Test Cases, Bug Reporting, SDLC, STLC, Selenium',
+      bullets: [
+        'Designed and executed test cases and scenarios based on functional requirements.',
+        'Identified, reported, and tracked defects to closure with the development team.',
+        'Performed functional, regression, and UI testing to validate usability and behavior.',
+      ],
     },
-    { icon: <FaAws />, label: 'DevOps Mindset', detail: 'Understands deployment workflows and cloud tooling.' },
+  ]
+
+  const workshops = [
+    {
+      title: 'Data Science Workshop',
+      org: 'CDW',
+      timeline: 'Oct 2025 — Nov 2025',
+      bullets: [
+        'Hands-on with data analysis using Pandas and NumPy.',
+        'Performed Exploratory Data Analysis (EDA) and visualizations using Matplotlib.',
+        'Learned Power BI basics for reporting and dashboards.',
+      ],
+    },
+    {
+      title: 'AWS Cloud Workshop',
+      org: 'AWS SheTech',
+      timeline: 'Jun 2025',
+      bullets: [
+        'Introduced to core AWS services (EC2, S3, IAM) and cloud fundamentals.',
+        'Understood deployment models and security basics.',
+        'Explored real-world use cases for scalable infrastructure.',
+      ],
+    },
   ]
 
   const handleSubmit = async (event) => {
@@ -254,52 +401,112 @@ function App() {
 
   return (
     <div className="portfolio">
+      {/* Animated Background */}
+      <div className="animated-bg">
+        <div className="bg-shape bg-shape-1"></div>
+        <div className="bg-shape bg-shape-2"></div>
+        <div className="bg-shape bg-shape-3"></div>
+        <div className="bg-shape bg-shape-4"></div>
+      </div>
+
+      {/* Custom Cursor Effect */}
+      <div 
+        className="custom-cursor"
+        style={{
+          left: `${mousePosition.x}%`,
+          top: `${mousePosition.y}%`,
+        }}
+      ></div>
+
       <nav className="nav">
-        <div className="nav__brand">Naveen T</div>
+        <div className="nav__brand">
+          <span className="brand-icon"><FaCode /></span>
+          <span>Naveen T</span>
+        </div>
         <div className="nav__links">
-          <a href="#summary">About</a>
-          <a href="#skills">Skills</a>
-          <a href="#projects">Projects</a>
-          <a href="#experience">Highlights</a>
-          <a href="#contact">Contact</a>
+          <a href="#summary" className="nav-link">
+            <span>About</span>
+          </a>
+          <a href="#skills" className="nav-link">
+            <span>Skills</span>
+          </a>
+          <a href="#work-experience" className="nav-link">
+            <span>Experience</span>
+          </a>
+          <a href="#projects" className="nav-link">
+            <span>Projects</span>
+          </a>
+          <a href="#training" className="nav-link">
+            <span>Training</span>
+          </a>
+          <a href="#experience" className="nav-link">
+            <span>Highlights</span>
+          </a>
+          <a href="#contact" className="nav-link">
+            <span>Contact</span>
+          </a>
         </div>
       </nav>
 
       <header className="hero" id="home">
+        <div className="hero__floating-elements">
+          <div className="floating-icon floating-icon-1"><FaCode /></div>
+          <div className="floating-icon floating-icon-2"><FaRocket /></div>
+          <div className="floating-icon floating-icon-3"><TbCloudComputing /></div>
+        </div>
         <div className="hero__main">
           <div className="hero__content">
-            <p className="hero__subtitle">Pre Final-Year Computer Science Student</p>
+            <div className="hero__badge-top">
+              <span className="badge-dot"></span>
+              <span>Pre-Final Year Computer Science Engineering Student</span>
+            </div>
             <h1 className="hero__title">
               <span className="hero__title-greeting">
                 Hi, I&apos;m <span className="hero__title-accent">Naveen</span>
               </span>
-              <span className="hero__title-role">Aspiring Software Engineer</span>
+              <span className="hero__title-role">
+                Aspiring <span className="typing-text">{typedText}</span>
+                <span className="cursor-blink">|</span>
+              </span>
               <span className="hero__title-focus">
                 passionate about <strong>Web Development</strong> & <strong>Cloud</strong>.
               </span>
             </h1>
             <p className="hero__summary">
-              I design engaging web products, wire up reliable backend services, and love working
-              with teams that ship purposeful solutions.
+              Pre-final year student with strong problem-solving skills and hands-on experience in
+              frontend development. I enjoy building clean, responsive UIs and integrating REST APIs
+              to deliver great user experiences.
             </p>
             <div className="hero__cta">
               <a className="button button--primary" href="#projects">
-                View Projects
+                <span>View Projects</span>
+                <FaRocket className="button-icon" />
               </a>
               <a
                 className="button button--secondary"
                 href="mailto:naveent1905@gmail.com"
               >
-                Let&apos;s Connect
+                <span>Let&apos;s Connect</span>
+                <FaEnvelope className="button-icon" />
+              </a>
+              <a className="button button--secondary" href={resumePdf} download>
+                <span>Download Resume</span>
+                <FaDownload className="button-icon" />
               </a>
             </div>
           </div>
         </div>
         <div className="hero__aside">
-          <div className="hero__image">
-            <img src={profileImage} alt="Naveen T" />
+          <div className="hero__image-wrapper">
+            <div className="hero__image-glow"></div>
+            <div className="hero__image">
+              <img src={profileImage} alt="Naveen T" />
+              <div className="image-overlay"></div>
+            </div>
+            <div className="hero__image-decoration"></div>
           </div>
           <div className="hero__badge">
+            <div className="badge-icon"><FaRocket /></div>
             <p>Actively seeking internships & entry-level software development roles.</p>
             <span>Ready to collaborate on impactful projects.</span>
           </div>
@@ -327,17 +534,18 @@ function App() {
 
       <section className="section" id="summary">
         <div className="section__title">
-          <h2>Executive Summary</h2>
-          <p>Continuous learner with a strong foundation in systems thinking and teamwork.</p>
+          <h2>Summary</h2>
+          <p>Focused on building responsive UI and reliable web software.</p>
         </div>
         <div className="section__content">
           <div className="summary-card">
             <p>
-              I am a pre-final year Computer Science and Engineering student focused on building
-              scalable web applications and cloud-native solutions. I am seeking opportunities to
-              apply my technical skills through internships or entry-level engineering roles where I
-              can contribute to real-world projects, master problem-solving, and grow alongside a
-              collaborative team.
+              Pre-final year Computer Science student with strong problem-solving skills and hands-on
+              experience in frontend development. Proficient in JavaScript, React.js, HTML, and CSS
+              for building responsive and interactive web applications. Experienced in integrating
+              REST APIs with frontend interfaces and collaborating in agile teams using Git and
+              GitHub. Passionate about creating clean UI, scalable web applications, and delivering
+              great user experiences.
             </p>
           </div>
         </div>
@@ -378,13 +586,57 @@ function App() {
                 animationDelay: `${index * 0.1}s`,
               }}
             >
-              <h3>{skill.category}</h3>
+              <div className="skill-card__header">
+                <h3>{skill.category}</h3>
+                <div className="skill-card__progress-bar">
+                  <div 
+                    className="skill-card__progress-fill"
+                    style={{
+                      width: visibleSections.has(`skill-${index}`) ? '100%' : '0%',
+                      transition: 'width 1s ease',
+                    }}
+                  ></div>
+                </div>
+              </div>
               <div className="skill-card__chips">
-                {skill.items.map((item) => (
-                  <span className="chip" key={item}>
+                {skill.items.map((item, itemIndex) => (
+                  <span 
+                    className="chip" 
+                    key={item}
+                    style={{
+                      animationDelay: `${itemIndex * 0.05}s`,
+                    }}
+                  >
                     {item}
                   </span>
                 ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" id="work-experience">
+        <div className="section__title">
+          <h2>Work Experience</h2>
+          <p>Internships that strengthened my engineering and testing fundamentals.</p>
+        </div>
+        <div className="timeline">
+          {workExperience.map((item) => (
+            <div className="timeline__item" key={`${item.role}-${item.company}`}>
+              <span className="timeline__dot" />
+              <div className="timeline__content">
+                <h3>{item.role}</h3>
+                <p className="timeline__institution">
+                  {item.company} · {item.location}
+                </p>
+                <p className="timeline__details">{item.stack}</p>
+                <ul className="list list--tight">
+                  {item.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+                <span className="timeline__time">{item.timeline}</span>
               </div>
             </div>
           ))}
@@ -406,32 +658,85 @@ function App() {
                 animationDelay: `${index * 0.15}s`,
               }}
             >
-              <div>
-                <h3>{project.title}</h3>
-                <p className="project-card__type">{project.type}</p>
-                <p className="project-card__description">{project.description}</p>
-                <ul className="project-card__list">
-                  {project.highlights.map((highlight) => (
-                    <li key={highlight}>{highlight}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="project-card__tech">
-                {project.technologies.map((tech) => (
-                  <div key={tech.label}>
-                    <span className="tech-label">{tech.label}</span>
-                    <p>{tech.value}</p>
+              <div className="project-card__inner">
+                <div className="project-card__front">
+                  <div className="project-card__number">0{index + 1}</div>
+                  <h3>{project.title}</h3>
+                  <p className="project-card__type">{project.type}</p>
+                  <div className="project-card__flip-hint">
+                    <span>Hover to explore</span>
+                    <span className="flip-arrow">→</span>
                   </div>
-                ))}
+                </div>
+                <div className="project-card__back">
+                  <p className="project-card__description">{project.description}</p>
+                  <ul className="project-card__list">
+                    {project.highlights.map((highlight) => (
+                      <li key={highlight}>
+                        <span className="list-icon">✓</span>
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="project-card__tech">
+                    {project.technologies.map((tech) => (
+                      <div key={tech.label} className="tech-item">
+                        <span className="tech-label">{tech.label}</span>
+                        <p>{tech.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {project.links?.length ? (
+                    <div className="project-card__links">
+                      {project.links.map((link) => (
+                        <a
+                          className="chip chip--link"
+                          href={link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          key={link.href}
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </article>
           ))}
         </div>
       </section>
 
+      <section className="section" id="training">
+        <div className="section__title">
+          <h2>Workshops & Training</h2>
+          <p>Hands-on learning that expanded my cloud and data skills.</p>
+        </div>
+        <div className="section__content">
+          <div className="timeline">
+            {workshops.map((item) => (
+              <div className="timeline__item" key={`${item.title}-${item.org}`}>
+                <span className="timeline__dot" />
+                <div className="timeline__content">
+                  <h3>{item.title}</h3>
+                  <p className="timeline__institution">{item.org}</p>
+                  <ul className="list list--tight">
+                    {item.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                  <span className="timeline__time">{item.timeline}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section" id="achievements">
         <div className="section__title">
-          <h2>Achievements & Hackathons</h2>
+          <h2>Achievements</h2>
         </div>
         <div className="section__content">
           <ul className="list">
